@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      run: api
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: api
+    spec:
+      nodeSelector:
+        group: apps-public-vpc
+      containers:
+        - image: {{ IMAGE_TAG }}
+          imagePullPolicy: IfNotPresent
+          name: api
+          envFrom:
+            - configMapRef:
+                name: api
+          ports:
+            - containerPort: 80
+              protocol: TCP
+              name: http
+          resources:
+            limits:
+              memory: 500Mi
+            requests:
+              memory: 500Mi
