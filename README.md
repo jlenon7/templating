@@ -24,7 +24,22 @@ npm install -g @jlenon7/templating
 
 ### Commands 
 
-> Format any string that matches the regex {{ NAME }} in the templates folder path.
+### Help
+
+> See all commands and tips from templating.
+
+```bash
+templating --help
+```
+
+### Generate
+
+> Templating will always look for environment variables first and then set the local fields, and format 
+> any string that matches the regex {{ NAME }} in the templates folder path.
+
+```bash
+templating generate ./manifest/templates --set IMAGE_TAG=my-dockerhub-image:latest
+```
 
 > manifest/templates/config-map.yml
 ```yml
@@ -75,12 +90,6 @@ spec:
               memory: 500Mi
             requests:
               memory: 500Mi
-```
-
-> Templating will always look for environment variables first and then set the local fields.
-
-```bash
-templating generate ./manifest/templates --set IMAGE_TAG=my-dockerhub-image:latest
 ```
 
 ---
