@@ -1,5 +1,7 @@
 export class FieldsSanitizer {
   static validateAll(options: string[]) {
+    if (!options || !options.length) return
+
     const json = {}
 
     options.forEach(option => {
