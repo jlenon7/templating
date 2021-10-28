@@ -1,6 +1,6 @@
 # Templating 📖
 
-> Simple CLI to use inside pipelines to replace stuff inside any type of file
+> Simple CLI to use inside pipelines to replace strings in any type of file
 
 <p>
   <img alt="GitHub language count" src="https://img.shields.io/github/languages/count/jlenon7/templating?style=for-the-badge&logo=appveyor">
@@ -35,11 +35,20 @@ templating --help
 ### Generate
 
 > Templating will always look for environment variables first and then set the local fields, and format 
-> any string that matches the regex {{ NAME }} in the templates folder path.
+> any string that matches the regex {{ NAME }} in the templates folder path. **Please create your templates first,
+> then run this command**.
 
 ```bash
 templating generate ./manifest/templates --set IMAGE_TAG=my-dockerhub-image:latest
 ```
+
+<p align='center'>
+  <img alt="Example Input" src="./.github/input-example.png">
+</p>
+
+<p align='center'>
+  <img alt="Example Output" src="./.github/output-example.png">
+</p>
 
 > manifest/templates/config-map.yml
 ```yml
@@ -94,18 +103,6 @@ spec:
 
 ---
 
-<p align='center'>
-  <img alt="Example" src="./.github/input-example.png">
-</p>
-
----
-
-<p align='center'>
-  <img alt="Example" src="./.github/output-example.png">
-</p>
-
----
-
 #### Using templating in a Gitlab CI pipeline
 
 ```yaml
@@ -113,8 +110,8 @@ services:
   - docker:dind
 
 variables:
-  IMAGE_TAG: jlenon7/your-service-name-here:$CI_COMMIT_SHA
-  IMAGE_LATEST: jlenon7/your-service-name-here:latest
+  IMAGE_LATEST: nickname-organization/your-image-name-here:latest
+  IMAGE_TAG: nickname-organization/your-image-name-here:$CI_COMMIT_SHA
 
 stages:
   - test
@@ -122,11 +119,21 @@ stages:
   - deploy
 
 Verify lint and run tests:
+  image: node:16.13.0
   stage: test
+  services:
+    - redis:latest
+    - postgres:latest
+  variables:
+    POSTGRES_DB: "postgres"
+    POSTGRES_USER: "postgres"
+    POSTGRES_PASSWORD: "root"
+    DATABASE_URL_TESTING: "postgresql://postgres:root@postgres:5432/postgres?schema=public"
   script:
-    - npm install
+    - cp ./manifest/.env.ci .env.ci
+    - npm install --silent
     - npm run lint:fix
-    - npm run test
+    - npm run test:ci
   only:
     - merge_requests
 
@@ -149,9 +156,9 @@ Deploy image to K8S Cluster:
     - aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
     - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
     - aws configure set region $AWS_DEFAULT_REGION
-    - aws eks --region us-east-1 update-kubeconfig --name eks-us-east-1-production
+    - aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name eks-$AWS_DEFAULT_REGION-production
     - templating generate ./manifest/templates --set IMAGE_TAG=$IMAGE_TAG
-    - kubectl apply -f ./manifest
+    - kubectl apply -f ./manifest/config-map.yml -f ./manifest/deployment.yml
   needs: ["Build and push image to Dockerhub"]
   only:
     - main
