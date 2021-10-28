@@ -36,7 +36,7 @@ templating --help
 
 > Templating will always look for environment variables first and then set the local fields, and format 
 > any string that matches the regex {{ NAME }} in the templates folder path. **Please create your templates first,
-> then run this command**.
+> then run this command. [Click here to see an example](https://github.com/jlenon7/templating/tree/main/manifest)**.
 
 ```bash
 templating generate ./manifest/templates --set IMAGE_TAG=my-dockerhub-image:latest
