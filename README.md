@@ -106,4 +106,57 @@ spec:
 
 ---
 
+#### Using templating in a Gitlab CI pipeline
+
+```yaml
+services:
+  - docker:dind
+
+variables:
+  IMAGE_TAG: jlenon7/your-service-name-here:$CI_COMMIT_SHA
+  IMAGE_LATEST: jlenon7/your-service-name-here:latest
+
+stages:
+  - test
+  - build
+  - deploy
+
+Verify lint and run tests:
+  stage: test
+  script:
+    - npm install
+    - npm run lint:fix
+    - npm run test
+  only:
+    - merge_requests
+
+Build and push image to Dockerhub:
+  image: docker:latest
+  stage: build
+  script:
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    - docker pull $IMAGE_LATEST || true
+    - docker build --cache-from $IMAGE_LATEST -t $IMAGE_TAG -t $IMAGE_LATEST .
+    - docker push $IMAGE_TAG
+    - docker push $IMAGE_LATEST
+  only:
+    - main
+
+Deploy image to K8S Cluster:
+  image: jlenon7/gitlab-deploy:latest
+  stage: deploy
+  script:
+    - aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+    - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+    - aws configure set region $AWS_DEFAULT_REGION
+    - aws eks --region us-east-1 update-kubeconfig --name eks-us-east-1-production
+    - templating generate ./manifest/templates --set IMAGE_TAG=$IMAGE_TAG
+    - kubectl apply -f ./manifest
+  needs: ["Build and push image to Dockerhub"]
+  only:
+    - main
+```
+
+---
+
 Made with 🖤 by [jlenon7](https://github.com/jlenon7) :wave:
