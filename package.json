@@ -1,6 +1,6 @@
 {
   "name": "@jlenon7/templating",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "license": "MIT",
   "author": "João Lenon",
@@ -17,10 +17,7 @@
     "templating": "index.js"
   },
   "devDependencies": {
-    "@secjs/contracts": "^1.1.6",
-    "@secjs/exceptions": "^1.0.3",
-    "@secjs/utils": "^1.3.8",
-    "@types/commander": "^2.12.2",
+    "@types/commander": "2.12.2",
     "@types/debug": "4.1.7",
     "@types/jest": "27.0.1",
     "@typescript-eslint/eslint-plugin": "4.31.0",
@@ -43,7 +40,7 @@
     "ts-node": "10.0.0",
     "tsconfig-paths": "3.9.0",
     "typescript": "4.3.5",
-    "uuid": "^8.3.2"
+    "uuid": "8.3.2"
   },
   "lint-staged": {
     "*.js": [
@@ -148,10 +145,13 @@
     "index.d.ts"
   ],
   "dependencies": {
-    "@secjs/env": "^1.1.8",
-    "@secjs/logger": "^1.1.4",
-    "commander": "^8.3.0",
-    "figlet": "^1.5.2",
-    "inquirer": "^8.2.0"
+    "@secjs/env": "1.1.8",
+    "@secjs/logger": "1.1.4",
+    "@secjs/contracts": "1.1.6",
+    "@secjs/exceptions": "1.0.3",
+    "@secjs/utils": "1.3.8",
+    "commander": "8.3.0",
+    "figlet": "1.5.2",
+    "inquirer": "8.2.0"
   }
 }
