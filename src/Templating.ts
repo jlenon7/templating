@@ -48,7 +48,7 @@ export class Templating {
     for await (const file of getFiles(this.templatesPath)) {
       const fileBase = parse(file).base
 
-      this.logger.log(`🔍 Template found: ${fileBase}`)
+      this.logger.success(`🔍 Template found: ${fileBase}`)
 
       this.templates.set(fileBase, (await readFile(file)).toString())
     }
@@ -78,7 +78,7 @@ export class Templating {
     const promises = []
 
     this.templates.forEach((template, templateKey) => {
-      this.logger.log(`🧬 Generating file from ${templateKey} template`)
+      this.logger.success(`🧬 Generating file from ${templateKey} template`)
 
       promises.push(
         writeFile(`${dirname(this.templatesPath)}/${templateKey}`, template),

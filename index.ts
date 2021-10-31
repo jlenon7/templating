@@ -12,15 +12,7 @@ const command = new Command()
 
 const packageJson = require('./package.json')
 
-command.version(packageJson.version)
-console.log(chalk.green(figlet.textSync('Templating CLI')))
-
-console.log('\n')
-
-console.log(chalk.green(`🆚 Version: ${packageJson.version}`))
-console.log(chalk.green(`👤 Maintainer: ${packageJson.author}`))
-
-console.log('\n')
+command.version(packageJson.version, '-v, --version')
 
 command
   .command('generate [path]')
@@ -43,10 +35,19 @@ command
 
       await templating.generate()
 
-      logger.log(`✅ All files generated inside -> ${dirname(path)}`)
+      logger.success(`✅ All files generated inside -> ${dirname(path)}`)
     } catch (error) {
       logger.error(`❌ Something went wrong: ${error.toString()}`)
     }
   })
 
 command.parse(process.argv)
+
+console.log(chalk.green(figlet.textSync('Templating CLI')))
+
+console.log('\n')
+
+console.log(chalk.green(`🆚 Version: ${packageJson.version}`))
+console.log(chalk.green(`👤 Maintainer: ${packageJson.author}`))
+
+console.log('\n')
