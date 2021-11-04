@@ -29,7 +29,9 @@ export class Templating {
 
         if (value.includes('{{ ')) return
 
-        this.logger.warn(`📝 Formatting ${k} to ${value}`, 'EnvFormatter')
+        this.logger.warn(`📝 Formatting ${k} to ${value}`, {
+          context: 'EnvFormatter',
+        })
 
         template = template.replace(this.matcher(k), value)
       })
@@ -63,7 +65,9 @@ export class Templating {
       Object.keys(fields).forEach(k => {
         const value = fields[k]
 
-        this.logger.warn(`📝 Formatting ${k} to ${value}`, 'FieldFormatter')
+        this.logger.warn(`📝 Formatting ${k} to ${value}`, {
+          context: 'FieldFormatter',
+        })
 
         template = template.replace(this.matcher(k), value)
       })
