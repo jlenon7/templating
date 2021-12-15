@@ -9,7 +9,7 @@ export class Templating {
   private logger = new Logger(Templating.name)
 
   private matcher(key?: string) {
-    if (key) return new RegExp(`{{\\s*${key}\\s*}}`)
+    if (key) return new RegExp(`{{\\s*${key}\\s*}}`, 'g')
 
     return /{{\s*.*\s*}}/g
   }

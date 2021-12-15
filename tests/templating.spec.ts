@@ -28,6 +28,7 @@ describe('\n Templating Class', () => {
     expect(configMapTemplate.includes('3000')).toBe(true)
     expect(configMapTemplate.includes('production')).toBe(true)
     expect(configMapTemplate.includes('http://127.0.0.1')).toBe(true)
+    expect(configMapTemplate.includes('http://127.0.0.1:3000')).toBe(true)
   })
 
   it('should be able to format environment variables and extra fields', async () => {
@@ -51,6 +52,7 @@ describe('\n Templating Class', () => {
     expect(configMapTemplate.includes('3000')).toBe(true)
     expect(configMapTemplate.includes('production')).toBe(true)
     expect(configMapTemplate.includes('http://127.0.0.1')).toBe(true)
+    expect(configMapTemplate.includes('http://127.0.0.1:3000')).toBe(true)
     expect(deploymentTemplate.includes('jlenon7/templating:latest')).toBe(true)
   })
 
