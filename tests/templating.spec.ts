@@ -1,5 +1,5 @@
 import { dirname } from 'path'
-import { readFile } from 'fs/promises'
+import { readFile, writeFile } from 'fs/promises'
 import { Templating } from '../src/Templating'
 
 describe('\n Templating Class', () => {
@@ -75,5 +75,29 @@ describe('\n Templating Class', () => {
     const file = await readFile(dirname(templatesPath) + '/deployment.yml')
 
     expect(file.toString().includes('jlenon7/templating:latest')).toBe(true)
+  })
+
+  it('should be able to generate the formatted file', async () => {
+    const filePath = process.cwd() + '/manifest/templates/config-map.yml'
+
+    const template = (await readFile(filePath)).toString()
+
+    const templating = new Templating()
+
+    await templating.forFile(filePath)
+
+    process.env.HOST = 'http://127.0.0.1'
+    process.env.NODE_ENV = 'production'
+
+    await templating.formatEnvs()
+    await templating.formatFields({ PORT: '4000' })
+
+    await templating.generate()
+
+    const file = await readFile(filePath)
+
+    expect(file.toString().includes('4000')).toBe(true)
+
+    await writeFile(filePath, template)
   })
 })

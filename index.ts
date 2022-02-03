@@ -16,6 +16,35 @@ const packageJson = require('./package.json')
 command.version(packageJson.version, '-v, --version')
 
 command
+  .command('generateFile [filePath]')
+  .description(
+    'Generate the file according to file template and environment variables.',
+  )
+  .option('-s, --set [fields...]', 'Subscribe environment variables')
+  .action(async (filePath, fields) => {
+    const logger = new Logger('CLI')
+
+    try {
+      filePath = resolve(filePath)
+      fields = FieldsSanitizer.validateAll(fields.set)
+
+      const templating = new Templating()
+
+      await templating.forFile(filePath)
+      await templating.formatEnvs()
+      await templating.formatFields(fields)
+
+      await templating.generate()
+
+      logger.success(
+        `✅ File generated inside -> ${dirname(`copy-of-${filePath}`)}`,
+      )
+    } catch (error) {
+      logger.error(`❌ Something went wrong: ${error.toString()}`)
+    }
+  })
+
+command
   .command('generate [path]')
   .description(
     'Generate the files according to template path and environment variables.',
