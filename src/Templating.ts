@@ -78,6 +78,16 @@ export class Templating {
     return this.templates
   }
 
+  async forFile(filePath: string) {
+    const { base, dir } = parse(filePath)
+
+    this.templatesPath = `${dir}/${base}`
+
+    this.logger.success(`🔍 Template found: ${base}`)
+
+    this.templates.set(base, (await readFile(filePath)).toString())
+  }
+
   async generate() {
     const promises = []
 
