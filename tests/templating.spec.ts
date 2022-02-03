@@ -90,14 +90,13 @@ describe('\n Templating Class', () => {
     process.env.NODE_ENV = 'production'
 
     await templating.formatEnvs()
-    await templating.formatFields({ PORT: '4000' })
+    await templating.formatFields({ PORT: '3000' })
 
     await templating.generate()
 
-    const file = await readFile(filePath)
-
-    expect(file.toString().includes('4000')).toBe(true)
-
+    const file = (await readFile(filePath)).toString()
     await writeFile(filePath, template)
+
+    expect(file.includes('3000')).toBe(true)
   })
 })
