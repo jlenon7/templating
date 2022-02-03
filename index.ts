@@ -5,7 +5,7 @@ import figlet from 'figlet'
 
 import { Command } from 'commander'
 import { Logger } from '@secjs/logger'
-import { dirname, resolve } from 'path'
+import { dirname, parse, resolve } from 'path'
 import { Templating } from './src/Templating'
 import { FieldsSanitizer } from './src/FieldsSanitizer'
 
@@ -36,9 +36,9 @@ command
 
       await templating.generate()
 
-      logger.success(
-        `✅ File generated inside -> ${dirname(`copy-of-${filePath}`)}`,
-      )
+      const { base } = parse(filePath)
+
+      logger.success(`✅ File ${base} has been replaced!`)
     } catch (error) {
       logger.error(`❌ Something went wrong: ${error.toString()}`)
     }
